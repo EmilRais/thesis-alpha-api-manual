@@ -1,0 +1,9 @@
+{
+  "email": "email",
+  "credential": {
+    "type": "alpha-api",
+    "email": "email",
+    "password": "password"
+  },
+  "_id": "abc123"
+}

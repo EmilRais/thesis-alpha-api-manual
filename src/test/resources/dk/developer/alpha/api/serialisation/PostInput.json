@@ -1,0 +1,28 @@
+{
+  "owner": {
+    "email": "email",
+    "credential": {
+      "type": "alpha-api",
+      "email": "email",
+      "password": "password"
+    },
+    "_id": "userId"
+  },
+  "board": {
+    "name": "name",
+    "image": "image",
+    "_id": "boardId"
+  },
+  "title": "title",
+  "description": "description",
+  "kind": "LOST",
+  "date": 123.456,
+  "image": "image",
+  "location": {
+    "latitude": 12.34,
+    "longitude": 56.78,
+    "name": "name",
+    "city": "city",
+    "postalCode": "postalCode"
+  }
+}

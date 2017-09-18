@@ -1,0 +1,9 @@
+{
+  "email": "email",
+  "credential": {
+    "type": "facebook",
+    "userId": "abc123",
+    "token": "token"
+  },
+  "_id": "abc123"
+}
