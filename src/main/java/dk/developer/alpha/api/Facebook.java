@@ -10,8 +10,8 @@ import javax.ws.rs.core.Response;
 import static dk.developer.utility.Converter.converter;
 
 public class Facebook {
-    public static final long APP_ID = 934587123;
-    public static final String APP_SECRET = "abc123adbf7829ccac2";
+    public static final long APP_ID = 1092068880930122L;
+    public static final String APP_SECRET = "470f440e050eb59788e7178c86ca982f";
     private final Client client = ClientBuilder.newClient();
 
     public InspectedFacebookToken inspectAccessToken(String token) {

@@ -1,8 +1,8 @@
 package dk.developer.alpha.api.user;
 
+import dk.developer.alpha.api.Facebook;
 import dk.developer.database.DatabaseFront;
 import dk.developer.database.DatabaseProvider;
-import dk.developer.alpha.api.Facebook;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.Status.*;
 
 @Path("user")
@@ -113,6 +114,24 @@ public class UserService {
             boolean updated = database.update(user);
             if (!updated) return Response.status(BAD_REQUEST).entity("Kunne ikke logge ind").build();
         }
+
+        return Response.status(OK).entity(user).build();
+    }
+
+    @POST
+    @Path("/facebook/get")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response getFacebookUser(FacebookCredential credential) {
+        String userId = credential.getUserId();
+        String token = credential.getToken();
+        InspectedFacebookToken inspectedToken = facebook.inspectAccessToken(token);
+
+        if (!inspectedToken.isValid() || !inspectedToken.getUserId().equals(userId))
+            return Response.status(UNAUTHORIZED).type(TEXT_PLAIN).entity("Ugyldigt Facebook-login").build();
+
+        User user = database.load(User.class).matching("credential.userId").with(userId);
+        if (user == null) return Response.status(NOT_ACCEPTABLE).type(TEXT_PLAIN).entity("Bruger ikke oprettet").build();
 
         return Response.status(OK).entity(user).build();
     }
