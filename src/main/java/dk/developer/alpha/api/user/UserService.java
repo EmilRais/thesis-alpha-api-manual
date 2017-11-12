@@ -88,37 +88,6 @@ public class UserService {
     }
 
     @POST
-    @Path("/login/facebook")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response login(FacebookCredential credential) {
-        String userId = credential.getUserId();
-        String token = credential.getToken();
-        InspectedFacebookToken inspectedToken = facebook.inspectAccessToken(token);
-
-        if (!inspectedToken.isValid() || !inspectedToken.getUserId().equals(userId))
-            return Response.status(UNAUTHORIZED).entity("Ugyldigt Facebook-login").build();
-
-        User user = database.load(User.class).matching("_id").with(userId);
-        if (user == null) return Response.status(NOT_ACCEPTABLE).entity("Bruger ikke oprettet").build();
-
-        if (!(user.getCredential() instanceof FacebookCredential))
-            return Response.status(UNAUTHORIZED).entity("Ugyldigt Facebook-login").build();
-
-        String userToken = ((FacebookCredential) user.getCredential()).getToken();
-        if (!userToken.equals(token)) {
-            LongLivedToken longLivedToken = facebook.extendShortLivedToken(token);
-            FacebookCredential newCredential = new FacebookCredential(userId, longLivedToken.getToken());
-            user.setCredential(newCredential);
-
-            boolean updated = database.update(user);
-            if (!updated) return Response.status(BAD_REQUEST).entity("Kunne ikke logge ind").build();
-        }
-
-        return Response.status(OK).entity(user).build();
-    }
-
-    @POST
     @Path("/facebook/get")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
