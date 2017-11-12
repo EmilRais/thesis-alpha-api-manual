@@ -135,4 +135,23 @@ public class UserService {
 
         return Response.status(OK).entity(user).build();
     }
+
+    @POST
+    @Path("/facebook/extend-token")
+    @Consumes(APPLICATION_JSON)
+    @Produces(TEXT_PLAIN)
+    public Response extendFacebookToken(FacebookCredential credential) {
+        String userId = credential.getUserId();
+        String token = credential.getToken();
+        InspectedFacebookToken inspectedToken = facebook.inspectAccessToken(token);
+
+        if (!inspectedToken.isValid() || !inspectedToken.getUserId().equals(userId))
+            return Response.status(UNAUTHORIZED).entity("Ugyldigt Facebook-login").build();
+
+        User user = database.load(User.class).matching("credential.userId").with(userId);
+        if (user == null) return Response.status(NOT_ACCEPTABLE).entity("Bruger ikke oprettet").build();
+
+        LongLivedToken longLivedToken = facebook.extendShortLivedToken(token);
+        return Response.status(OK).entity(longLivedToken.getToken()).build();
+    }
 }

@@ -1,11 +1,14 @@
 package dk.developer.alpha.api;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.developer.alpha.api.user.InspectedFacebookToken;
 import dk.developer.alpha.api.user.LongLivedToken;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 
 import static dk.developer.utility.Converter.converter;
 
@@ -28,7 +31,7 @@ public class Facebook {
     }
 
     public LongLivedToken extendShortLivedToken(String token) {
-        Response response = client.target("https://graph.facebook.com/oauth/access_token?")
+        Response response = client.target("https://graph.facebook.com/oauth/access_token")
                 .queryParam("grant_type", "fb_exchange_token")
                 .queryParam("client_id", APP_ID)
                 .queryParam("client_secret", APP_SECRET)
@@ -41,16 +44,13 @@ public class Facebook {
     }
 
     private LongLivedToken buildLongLivedToken(String result) {
-        int accessTokenBegin = result.indexOf("access_token=") + "access_token=".length();
-        int accessTokenEnd = result.indexOf("&");
-        String accessToken = result.substring(accessTokenBegin, accessTokenEnd);
-
-        int expiresBegin = result.indexOf("expires=") + "expires=".length();
-        int expiresEnd = result.length();
-        String expiresString = result.substring(expiresBegin, expiresEnd);
-        long expires = Long.parseLong(expiresString);
-
-        return new LongLivedToken(accessToken, expires);
+        try {
+            return new ObjectMapper()
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .readValue(result, LongLivedToken.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean validToken(InspectedFacebookToken token, String userId) {
