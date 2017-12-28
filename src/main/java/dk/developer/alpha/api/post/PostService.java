@@ -40,9 +40,9 @@ public class PostService {
     }
 
     @POST
-    @Path("/delete")
+    @Path("/delete/{id}")
     @Consumes(APPLICATION_JSON)
-    public Response delete(String id) {
+    public Response delete(@PathParam("id") String id) {
         boolean didDelete = database.delete(Post.class).matching("_id").with(id);
         return expectModification(didDelete);
     }

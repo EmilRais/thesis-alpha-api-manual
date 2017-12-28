@@ -95,7 +95,7 @@ public class PostServiceAcceptanceTest {
     @Test
     public void shouldFailWhenDeletingPostThatDoesNotExist() throws Exception {
         String id = ObjectId.get().toString();
-        Result result = to(PostService.class).with(id).post("/post/delete");
+        Result result = to(PostService.class).with("").post("/post/delete/" + id);
 
         ASSERT.that(result.status()).isSameAs(INTERNAL_SERVER_ERROR);
     }
@@ -107,7 +107,7 @@ public class PostServiceAcceptanceTest {
         database.save(post);
 
         String id = post.getId();
-        Result result = to(PostService.class).with(id).post("/post/delete");
+        Result result = to(PostService.class).with("").post("/post/delete/" + id);
 
         ASSERT.that(result.status()).isSameAs(OK);
 
