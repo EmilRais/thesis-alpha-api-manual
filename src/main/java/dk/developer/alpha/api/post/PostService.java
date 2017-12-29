@@ -27,6 +27,7 @@ public class PostService {
     @POST
     @Path("/create")
     @Consumes(APPLICATION_JSON)
+    @Produces(TEXT_PLAIN)
     public Response create(@Valid Post post) {
         database.save(post);
         return Response.status(CREATED).build();
