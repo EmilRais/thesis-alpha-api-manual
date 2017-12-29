@@ -75,13 +75,13 @@ public class UserService {
         User user = database.load(User.class).matching("email").with(credential.getEmail());
         if (user == null) {
             String errorMessage = "Der findes ingen bruger med email: " + credential.getEmail();
-            return Response.status(UNAUTHORIZED).entity(errorMessage).build();
+            return Response.status(UNAUTHORIZED).type(TEXT_PLAIN).entity(errorMessage).build();
         }
 
         AlphaApiCredential userCredential = (AlphaApiCredential) user.getCredential();
         if (!userCredential.getPassword().equals(credential.getPassword())) {
             String errorMessage = "Forkert kodeord";
-            return Response.status(UNAUTHORIZED).entity(errorMessage).build();
+            return Response.status(UNAUTHORIZED).type(TEXT_PLAIN).entity(errorMessage).build();
         }
 
         return Response.status(OK).entity(user).build();
