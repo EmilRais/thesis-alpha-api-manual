@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.Status.*;
 
 @Path("post")
@@ -56,7 +57,7 @@ public class PostService {
 
     @GET
     @Path("/get/board")
-    @Produces(APPLICATION_JSON)
+    @Produces(TEXT_PLAIN)
     public Response getBoardPosts(
             @QueryParam("id")
             @NotEmpty(message = "BoardId er ikke valid")
@@ -66,7 +67,7 @@ public class PostService {
                 .filter(isChildOfBoard(boardId))
                 .collect(Collectors.toList());
 
-        return Response.status(OK).entity(matchingPosts).build();
+        return Response.status(OK).type(APPLICATION_JSON).entity(matchingPosts).build();
     }
 
     private Predicate<Post> isChildOfBoard(String boardId) {
