@@ -2,11 +2,9 @@ package dk.developer.alpha.api.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.developer.alpha.api.validation.FacebookToken;
 
 import java.util.Objects;
 
-@FacebookToken(message = "Facebook token er ikke valid")
 public class FacebookCredential implements Credential{
     private final String userId;
     private final String token;
