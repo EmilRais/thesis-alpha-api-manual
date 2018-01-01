@@ -47,7 +47,7 @@ public class UserService {
         Credential credential = user.getCredential();
 
         if (!(credential instanceof FacebookCredential)) {
-            return Response.status(BAD_REQUEST).entity("Ugyldigt Facebook-login").build();
+            return Response.status(BAD_REQUEST).type(TEXT_PLAIN).entity("Ugyldigt Facebook-login").build();
         }
 
         FacebookCredential facebookCredential = (FacebookCredential) credential;
@@ -56,7 +56,7 @@ public class UserService {
         InspectedFacebookToken inspectedToken = facebook.inspectAccessToken(token);
 
         if (!inspectedToken.isValid() || !inspectedToken.getUserId().equals(userId)) {
-            return Response.status(BAD_REQUEST).entity("Ugyldigt Facebook-login").build();
+            return Response.status(BAD_REQUEST).type(TEXT_PLAIN).entity("Ugyldigt Facebook-login").build();
         }
 
         LongLivedToken longLivedToken = facebook.extendShortLivedToken(token);
